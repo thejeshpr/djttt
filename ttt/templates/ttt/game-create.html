@@ -1,0 +1,45 @@
+{% extends 'ttt/base.html' %}
+
+{% load bootstrap5 %}
+
+{% block content %}
+    <div>
+        <h6>Create New Game</h6>
+    </div>
+    <form action="/create-game/" method="post" class="form">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              Create Game
+            </button>
+          {% endbuttons %}
+    </form>
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Player 1</th>
+                <th scope="col">Player 2</th>
+                <th scope="col">status</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for game in games %}
+            <tr>
+              <td>{{ game.player_1 }}</td>
+                <td>{{ game.player_2 }}</td>
+              <td>{{ game.status }}: {{ game.message }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+{% endblock %}

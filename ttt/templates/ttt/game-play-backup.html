@@ -1,0 +1,218 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Fixed top navbar example · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/navbar-fixed/">
+
+
+
+    <!-- Bootstrap core CSS -->
+<link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Favicons -->
+<link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
+<link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+<link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+<meta name="theme-color" content="#7952b3">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/5.0/examples/navbar-fixed/navbar-top-fixed.css" rel="stylesheet">
+  </head>
+  <body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Fixed navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="bg-light p-5 rounded">
+      <div>
+        <h6><strong>Game ID:</strong> {{ game.gid }}</h6>
+        <h6><strong>Player:</strong> {{ player }}</h6>
+          {% if player_type == "PRIMARY" %}
+        <h6><strong>Opponent Link:</strong> <a href="{% url 'ttt:play-game' secondary_player_uid %}" target="_blank">{{ secondary_player_uid }}</a></h6>
+          {% endif %}
+
+    </div>
+
+      <div class="alert alert-danger d-none" role="alert">
+        A simple danger alert—check it out!
+      </div>
+
+      <div id="game-message" class="alert alert-secondary" role="alert">
+        {{ game.message }}
+      </div>
+
+      <div class="d-none">
+          GID: <span id="gid">{{ game.gid }}</span><br/>
+          Player ID: <span id="player_id" data-id="{{ player_id }}">{{ player_id }}</span></br>
+
+          <span>Game: {{ game.gid }}</span><br/>
+          Player: {{ player }}
+          {% if player.name == game.turn.name %}
+          <br/>Your Turn
+          {% endif %}
+          <br/><span id="player">{{ player.name }}</span>
+          <br/><span id="turn">{{ game.turn.name }}</span>
+      </div>
+    <table class="table table-bordered" id="board" border="5px">
+        <tbody>
+            <tr>
+              {% for cell in game.cells.all %}
+                  <td class="ttt-cell" id="cell-{{ forloop.counter }}" width="33%" height="250px" data-cell_id="{{ cell.cell_id }}" data-status="{{ cell.status }}" align="center" valign="middle" style="font-size: 50px;">{{ cell }}
+                    <span id="marked-flag" name="marked-flag"></span><br/>
+                    <span id="marked-user" name="marked-user"></span>
+                  </td>
+                  {% if forloop.counter|divisibleby:3 %}
+                    </tr><tr>
+                  {% endif %}
+              {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+  </div>
+</main>
+
+    <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function(){
+    let player = "{{ player.id }}";
+    let player_type = "{{ player_type }}";
+    let player_name = "{{ player.name }}";
+    let turn_player_name = "{{ game.turn.name }}";
+    let can_play = "";
+    let player_uid = "{{ player_id }}";
+    let gid = "{{ game.gid }}";
+    game_status = "";
+
+    console.log(turn_player_name);
+
+    function getBoard() {
+        if (game_status != "FINISHED") {
+            $.ajax({
+              url: "/get-board/" + $("#player_id").text(),
+              data: {
+              },
+              success: function( result ) {
+                console.log(result);
+                can_play = result.can_play;
+                game_status = result.game_status;
+                $("#game-message").text(result.game_message);
+
+                for (let i = 1; i < result.cells.length + 1; i++) {
+    <!--                console.log(i);-->
+                    text = $("#cell-" + i).text();
+    <!--                $("#cell-" + i).text(text + " - OK");-->
+
+                    $("#cell-" + i).attr("data-status", result.cells[i-1].status);
+
+                    if (result.cells[i-1].status == "MARKED") {
+                        if (result.cells[i-1].marked_by == result.player_1 ) {
+                            $("#cell-" + i).addClass("table-success");
+                        } else {
+                            $("#cell-" + i).addClass("table-danger");
+                        }
+
+                        if (result.cells[i-1].winning_cell == true ) {
+                            $("#cell-" + i).text("X");
+                        }
+
+                    }
+                }
+
+              }
+            });
+       } else {
+            console.log("Game Finished");
+       }
+    }
+
+    getBoard();
+    setInterval(getBoard, 1000);
+
+      $(".ttt-cell").click(function(){
+            cell_status = $(this).data("status");
+            console.log(can_play);
+
+            if ( can_play == true && cell_status == "BLANK" && game_status != "FINISHED") {
+
+                if ( player_type == "PRIMARY" ) {
+                    $(this).addClass("table-success");
+                } else {
+                    $(this).addClass("table-danger");
+                }
+
+                $.ajax({
+                  method: "POST",
+                  url: "/mark-cell/" + player_uid,
+                  data: {
+                    cell_id: $(this).data("cell_id"),
+                    player_type: player_type,
+                    gid: gid,
+                    player_id: player
+                  },
+                  success: function( result ) {
+                    console.log(result);
+                  }
+                });
+            } else {
+                alert("You can't play");
+            }
+
+      });
+
+});
+</script>
+  </body>
+</html>
